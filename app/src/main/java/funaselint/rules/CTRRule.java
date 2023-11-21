@@ -8,9 +8,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
 
+public class CTRRule extends Rule implements AutoFixable {
 
-public class CTRRule extends Rule implements AutoFixable{
-    
     @Override
     public List<String> applicableFilesOrFolders() {
         return List.of("ppt/slides/"); // relsも含んでしまう問題あり
@@ -33,21 +32,22 @@ public class CTRRule extends Rule implements AutoFixable{
 
     @Override
     public void autoFix(Document doc, File file) {
-    NodeList pPrNodes = doc.getElementsByTagName("a:pPr");
-    for (int i = 0; i < pPrNodes.getLength(); i++) {
-           Node pPrNode = pPrNodes.item(i);
+        System.out.println("autofix");
+        NodeList pPrNodes = doc.getElementsByTagName("a:pPr");
+        for (int i = 0; i < pPrNodes.getLength(); i++) {
+            Node pPrNode = pPrNodes.item(i);
 
-           if (pPrNode instanceof Element) {
-               Element pPrElement = (Element) pPrNode;
-               String alignment = pPrElement.getAttribute("algn");
+            if (pPrNode instanceof Element) {
+                Element pPrElement = (Element) pPrNode;
+                String alignment = pPrElement.getAttribute("algn");
 
-            // "just"、"l"、"r"の場合、"ctr"に変更
-               if ("just".equals(alignment) || "l".equals(alignment) || "r".equals(alignment)) {
-                   pPrElement.setAttribute("algn", "ctr");
-               }
-           }
-         }
-     }
+                // "just"、"l"、"r"の場合、"ctr"に変更
+                if ("just".equals(alignment) || "l".equals(alignment) || "r".equals(alignment)) {
+                    pPrElement.setAttribute("algn", "ctr");
+                }
+            }
+        }
+    }
 
     private Node getChildNodeByTagName(Node parent, String tagName) {
         NodeList childNodes = parent.getChildNodes();
