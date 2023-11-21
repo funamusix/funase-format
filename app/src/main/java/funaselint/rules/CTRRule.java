@@ -17,7 +17,7 @@ public class CTRRule extends Rule implements AutoFixable {
 
     @Override
     public boolean checkCondition(Document doc, File file) {
-        NodeList pNodes = doc.getElementsByTagName("a:p"); // <a:t> タグに含まれるテキストを取得
+        NodeList pNodes = doc.getElementsByTagName("a:p"); // <a:p> タグに含まれるテキストを取得
         for (int i = 0; i < pNodes.getLength(); i++) {
             Node pNode = pNodes.item(i);
             Node pPrNode = getChildNodeByTagName(pNode, "a:pPr");
