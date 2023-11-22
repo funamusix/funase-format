@@ -12,9 +12,7 @@ public class CTRRule extends Rule implements AutoFixable {
 
     @Override
     public List<String> applicableFilesOrFolders() {
-        List<String> applicableList = List.of("ppt/slides/"); 
-        applicableList.removeIf(element -> element.equals("_rels"));
-        return applicableList;
+        return List.of("ppt/slides/");
     }
 
     @Override

@@ -52,6 +52,7 @@ public class App implements Callable<Integer> {
         List<Rule> rules = new ArrayList<>();
         rules.add(new SlideAspectRule());
         rules.add(new PunctuationMarkRule());
+        rules.add(new CTRRule());
         
         linterOption.setRules(rules);
 
