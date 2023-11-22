@@ -49,7 +49,10 @@ public class IgnoreProcessor {
             processConfigurationFile(ignoreFile);
         }
         Path relativePath = topLevelDirectory.relativize(path);
+        return isPathAllowed(ignoreFile, relativePath);
+    }
 
+    private boolean isPathAllowed(Path ignoreFile, Path relativePath) {
         return matchesAllowedPatterns(ignoreFile, relativePath) || !matchesIgnoredPatterns(ignoreFile, relativePath);
     }
 
@@ -100,17 +103,20 @@ public class IgnoreProcessor {
     }
 
     private boolean matchesPatterns(Map<Path, Set<String>> patternsCache, Path ignoreFile, Path relativePath) {
-        return patternsCache.getOrDefault(ignoreFile, Collections.emptySet()).stream().anyMatch(pattern -> {
-            String globPattern;
-            if (pattern.endsWith("/")) {
-                pattern = pattern.substring(0, pattern.length() - 1);
-                globPattern = GLOB_PREFIX +  pattern + "/**";
-            } else {
-                globPattern = GLOB_PREFIX + pattern;
-            }
-            PathMatcher matcher = getPathMatcher(globPattern);
-            return matcher.matches(relativePath);
-        });
+        return patternsCache.getOrDefault(ignoreFile, Collections.emptySet()).stream()
+                .anyMatch(pattern -> matchesPattern(relativePath, pattern));
+    }
+
+    private boolean matchesPattern(Path relativePath, String pattern) {
+        if (pattern.endsWith("/")) {
+            String globPattern = GLOB_PREFIX + "**/" + pattern + "**";
+            return getPathMatcher(globPattern).matches(relativePath);
+        } else {
+            String globPatternForSubdirectories = GLOB_PREFIX + "**/" + pattern;
+            String globPatternForTopLevel = GLOB_PREFIX + "/" + pattern;
+            return getPathMatcher(globPatternForSubdirectories).matches(relativePath) ||
+                    getPathMatcher(globPatternForTopLevel).matches(relativePath);
+        }
     }
 
     private PathMatcher getPathMatcher(String globPattern) {
