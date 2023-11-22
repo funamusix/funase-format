@@ -15,8 +15,9 @@ import funaselint.utils.ZipUtils;
 public class Linter {
     private RuleEngine ruleEngine;
 
-    public Linter(LinterOption linterOption) {
-        this.ruleEngine = new RuleEngine(linterOption.getRules(), linterOption.isFix(), linterOption.isVerbose());
+    public Linter(Config config) {
+        this.ruleEngine = new RuleEngine(
+                config.getActiveRules().values().stream().toList(), config.isFixEnabled(), config.isVerboseOutput());
     }
 
     public void lint(Path inputPath) {
