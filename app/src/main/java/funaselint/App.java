@@ -9,9 +9,11 @@ import funaselint.cli.ExistingPathConsumer;
 import funaselint.linter.Linter;
 import funaselint.linter.LinterOption;
 import funaselint.rules.CTRRule;
+import funaselint.rules.AmbiguousWordRule;
 import funaselint.rules.PunctuationMarkRule;
 import funaselint.rules.Rule;
 import funaselint.rules.SlideAspectRule;
+import funaselint.rules.SlideThemeRule;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -53,7 +55,8 @@ public class App implements Callable<Integer> {
         rules.add(new SlideAspectRule());
         rules.add(new PunctuationMarkRule());
         rules.add(new CTRRule());
-        
+        rules.add(new AmbiguousWordRule());
+        rules.add(new SlideThemeRule());
         linterOption.setRules(rules);
 
         if (rule != null) {
