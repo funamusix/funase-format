@@ -20,8 +20,8 @@ public class CTRRule extends Rule implements AutoFixable {
         NodeList pPrNodes = doc.getElementsByTagName("a:pPr");
         for (int i = 0; i < pPrNodes.getLength(); i++) {
             Node pPrNode = pPrNodes.item(i);
-            if (pPrNode != null && "ctr".equals(getAttributeValue(pPrNode, "algn"))) {
-                // センタリングされていない場合はfalseを返す
+            if (pPrNode != null && !"ctr".equals(getAttributeValue(pPrNode, "algn"))) {
+                // ctrでない場合true
                 return true;
             }
         }
@@ -39,7 +39,7 @@ public class CTRRule extends Rule implements AutoFixable {
                 // "algn"属性が存在しない場合にも対応
                 String alignment = pPrElement.hasAttribute("algn") ? pPrElement.getAttribute("algn") : "";
 
-                // "ctr"でない場合"ctrに変換"
+                // "ctr"に修正
                 if (!"ctr".equals(alignment)) {
                     pPrElement.setAttribute("algn", "ctr");
                 }
