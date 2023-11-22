@@ -21,7 +21,7 @@ public class Config {
     private boolean fixEnabled = false;
     private boolean verboseOutput = false;
     private Map<String, Rule> activeRules = new HashMap<>();
-    private Style outputStyle = Style.JSON;
+    private OutputStyle outputStyle = OutputStyle.JSON;
     private final Gson gson = new Gson();
 
     public Config() {
@@ -83,7 +83,7 @@ public class Config {
             this.verboseOutput = (Boolean) configMap.get("verboseOutput");
         }
         if (configMap.containsKey("outputStyle")) {
-            this.outputStyle = Style.valueOf(((String) configMap.get("outputStyle")).toUpperCase());
+            this.outputStyle = OutputStyle.valueOf(((String) configMap.get("outputStyle")).toUpperCase());
         }
     }
 
@@ -107,10 +107,6 @@ public class Config {
     private Rule instantiateRule(String ruleClassName) throws ReflectiveOperationException {
         Class<?> clazz = Class.forName("funaselint.rules." + ruleClassName);
         return (Rule) clazz.getDeclaredConstructor().newInstance();
-    }
-
-    public enum Style {
-        JSON, FUNASE
     }
 
     public boolean isFixEnabled() {
@@ -137,11 +133,11 @@ public class Config {
         this.activeRules = rules;
     }
 
-    public Style getOutputStyle() {
+    public OutputStyle getOutputStyle() {
         return outputStyle;
     }
 
-    public void setOutputStyle(Style style) {
+    public void setOutputStyle(OutputStyle style) {
         this.outputStyle = style;
     }
 }

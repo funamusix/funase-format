@@ -41,7 +41,7 @@ class ConfigTest {
         config.loadConfiguration(tempDir);
         assertTrue(config.isFixEnabled());
         assertTrue(config.isVerboseOutput());
-        assertEquals(Config.Style.FUNASE, config.getOutputStyle());
+        assertEquals(OutputStyle.FUNASE, config.getOutputStyle());
     }
 
     @Test
@@ -52,7 +52,7 @@ class ConfigTest {
         config.setVerboseOutput(true);
         assertTrue(config.isVerboseOutput());
 
-        config.setOutputStyle(Config.Style.FUNASE);
-        assertEquals(Config.Style.FUNASE, config.getOutputStyle());
+        config.setOutputStyle(OutputStyle.FUNASE);
+        assertEquals(OutputStyle.FUNASE, config.getOutputStyle());
     }
 }

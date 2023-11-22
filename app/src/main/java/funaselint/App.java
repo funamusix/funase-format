@@ -1,13 +1,15 @@
 package funaselint;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import funaselint.cli.ExistingPathConsumer;
 import funaselint.cli.StyleParameterConsumer;
 import funaselint.linter.Config;
-import funaselint.linter.Config.Style;
 import funaselint.linter.Linter;
+import funaselint.linter.OutputStyle;
+import funaselint.rules.RuleApplicationResult;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -34,7 +36,7 @@ public class App implements Callable<Integer> {
     @Option(names = { "--style", "-s" }, //
             description = "Specify output style.", //
             parameterConsumer = StyleParameterConsumer.class)
-    private Style style = Style.JSON;
+    private OutputStyle style = OutputStyle.JAPANESE;
 
     @Parameters(index = "0", //
             description = "The PowerPoint file or directory to lint.", //
@@ -62,7 +64,15 @@ public class App implements Callable<Integer> {
         config.setOutputStyle(style);
 
         Linter linter = new Linter(config);
-        linter.lint(inputPath);
+        List<List<RuleApplicationResult>> results = linter.lint(inputPath);
+
+        results.forEach(result -> {
+            if (result.isEmpty()) {
+                System.out.println("No problems found.");
+            } else {
+                System.out.println(style.format(result));
+            }
+        });
 
         return 0; // 成功した場合は0を返します
     }

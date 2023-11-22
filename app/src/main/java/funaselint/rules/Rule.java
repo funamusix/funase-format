@@ -1,15 +1,15 @@
 package funaselint.rules;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 
 import org.w3c.dom.Document;
 
 public abstract class Rule {
 
-    public abstract List<String> applicableFilesOrFolders();
+    public abstract List<Path> applicablePath();
 
-    public abstract boolean checkCondition(Document doc, File file);
+    public abstract List<RuleApplicationResult> applyRule(Document doc, Path filePath, boolean fixEnabled);
 
     public String toString() {
         return getClass().getSimpleName();
