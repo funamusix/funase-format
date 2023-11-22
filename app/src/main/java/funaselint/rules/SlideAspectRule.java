@@ -48,4 +48,4 @@ public class SlideAspectRule extends Rule implements AutoFixable {
             sldSz.setAttribute("cy", "6858000"); // 高さを19.05cm（3の比率）に設定
         }
     }
-}
+}   
