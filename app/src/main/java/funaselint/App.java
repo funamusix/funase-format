@@ -8,6 +8,8 @@ import java.util.concurrent.Callable;
 import funaselint.cli.ExistingPathConsumer;
 import funaselint.linter.Linter;
 import funaselint.linter.LinterOption;
+import funaselint.rules.CTRRule;
+import funaselint.rules.PunctuationMarkRule;
 import funaselint.rules.Rule;
 import funaselint.rules.SlideAspectRule;
 import picocli.CommandLine;
@@ -49,6 +51,8 @@ public class App implements Callable<Integer> {
         
         List<Rule> rules = new ArrayList<>();
         rules.add(new SlideAspectRule());
+        rules.add(new PunctuationMarkRule());
+        rules.add(new CTRRule());
         linterOption.setRules(rules);
 
         if (rule != null) {
@@ -73,6 +77,6 @@ public class App implements Callable<Integer> {
     public static void main(String[] args) {
         int exitCode = new CommandLine(new App()).execute(args);
         System.exit(exitCode);
-        System.out.println("a");
+
     }
 }
