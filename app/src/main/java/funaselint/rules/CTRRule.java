@@ -12,7 +12,7 @@ public class CTRRule extends Rule implements AutoFixable {
 
     @Override
     public List<String> applicableFilesOrFolders() {
-        return List.of("ppt/slides/slide2.xml"); // relsも含んでしまう問題あり
+        return List.of("ppt/slides/");
     }
 
     @Override
@@ -20,8 +20,8 @@ public class CTRRule extends Rule implements AutoFixable {
         NodeList pPrNodes = doc.getElementsByTagName("a:pPr");
         for (int i = 0; i < pPrNodes.getLength(); i++) {
             Node pPrNode = pPrNodes.item(i);
-            if (pPrNode != null && "ctr".equals(getAttributeValue(pPrNode, "algn"))) {
-                // センタリングされていない場合はfalseを返す
+            if (pPrNode != null && !"ctr".equals(getAttributeValue(pPrNode, "algn"))) {
+                // ctrでない場合true
                 return true;
             }
         }
@@ -36,10 +36,11 @@ public class CTRRule extends Rule implements AutoFixable {
 
             if (pPrNode instanceof Element) {
                 Element pPrElement = (Element) pPrNode;
-                String alignment = pPrElement.getAttribute("algn");
+                // "algn"属性が存在しない場合にも対応
+                String alignment = pPrElement.hasAttribute("algn") ? pPrElement.getAttribute("algn") : "";
 
-                // "just"、"l"、"r"の場合、"ctr"に変更
-                if ("just".equals(alignment) || "l".equals(alignment) || "r".equals(alignment)) {
+                // "ctr"に修正
+                if (!"ctr".equals(alignment)) {
                     pPrElement.setAttribute("algn", "ctr");
                 }
             }
