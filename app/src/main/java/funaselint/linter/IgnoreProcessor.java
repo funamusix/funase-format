@@ -109,13 +109,11 @@ public class IgnoreProcessor {
 
     private boolean matchesPattern(Path relativePath, String pattern) {
         if (pattern.endsWith("/")) {
-            String globPattern = GLOB_PREFIX + "**/" + pattern + "**";
+            String globPattern = GLOB_PREFIX + "**" + pattern + "**";
             return getPathMatcher(globPattern).matches(relativePath);
         } else {
-            String globPatternForSubdirectories = GLOB_PREFIX + "**/" + pattern;
-            String globPatternForTopLevel = GLOB_PREFIX + "/" + pattern;
-            return getPathMatcher(globPatternForSubdirectories).matches(relativePath) ||
-                    getPathMatcher(globPatternForTopLevel).matches(relativePath);
+            String globPattern = GLOB_PREFIX + "**" + pattern;
+            return getPathMatcher(globPattern).matches(relativePath);
         }
     }
 
