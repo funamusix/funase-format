@@ -1,7 +1,8 @@
 package funaselint.linter;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -18,38 +19,37 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 
-import funaselint.rules.AutoFixable;
 import funaselint.rules.Rule;
+import funaselint.rules.RuleApplicationResult;
 
 public class RuleEngine {
     private final List<Rule> rules;
-    private boolean fix;
-    private boolean verbose;
+    private boolean fixEnabled;
+    private boolean verboseOutput;
 
     public RuleEngine(List<Rule> rules, boolean fix, boolean verbose) {
         this.rules = rules;
-        this.fix = fix;
-        this.verbose = verbose;
+        this.fixEnabled = fix;
+        this.verboseOutput = verbose;
     }
 
     public List<Rule> getRules() {
         return rules;
     }
 
-    public boolean isFix() {
-        return fix;
+    public boolean isFixEnabled() {
+        return fixEnabled;
     }
 
-    public boolean isVerbose() {
-        return verbose;
+    public boolean isVerboseOutput() {
+        return verboseOutput;
     }
 
-    public void applyRules(File baseDirectory) throws IOException, ParserConfigurationException {
+    public List<RuleApplicationResult> applyRules(Path baseDirectory) throws IOException, ParserConfigurationException {
         DocumentBuilder dBuilder = createDocumentBuilder();
-
-        for (Rule rule : rules) {
-            processRule(baseDirectory, rule, dBuilder);
-        }
+        return rules.stream()
+                .flatMap(rule -> processRule(baseDirectory, rule, dBuilder).stream())
+                .toList();
     }
 
     private DocumentBuilder createDocumentBuilder() throws ParserConfigurationException {
@@ -57,51 +57,66 @@ public class RuleEngine {
         return dbFactory.newDocumentBuilder();
     }
 
-    private void processRule(File baseDirectory, Rule rule, DocumentBuilder dBuilder) {
-        for (String relativePath : rule.applicableFilesOrFolders()) {
-            File fileOrDirectory = new File(baseDirectory, relativePath);
-            if (fileOrDirectory.isDirectory()) {
-                applyRuleToDirectory(rule, fileOrDirectory, dBuilder);
-            } else if (fileOrDirectory.exists()) {
-                applyRuleToFile(rule, fileOrDirectory, dBuilder);
-            }
-        }
+    private List<RuleApplicationResult> processRule(Path baseDirectory, Rule rule, DocumentBuilder dBuilder) {
+        return rule.applicablePath().stream()
+                .map(relativePath -> baseDirectory.resolve(relativePath).normalize())
+                .filter(Files::exists)
+                .flatMap(filePath -> {
+                    if (Files.isDirectory(filePath)) {
+                        return applyRuleToDirectory(rule, filePath, dBuilder).stream();
+                    } else {
+                        return applyRuleToFile(rule, filePath, dBuilder).stream();
+                    }
+                })
+                .toList();
     }
 
-    private void applyRuleToDirectory(Rule rule, File directory, DocumentBuilder dBuilder) {
-        try (Stream<Path> paths = Files.walk(directory.toPath())) {
-            paths.filter(Files::isRegularFile)
-                    .forEach(file -> applyRuleToFile(rule, file.toFile(), dBuilder));
+    private List<RuleApplicationResult> applyRuleToDirectory(Rule rule, Path directory, DocumentBuilder dBuilder) {
+        List<RuleApplicationResult> results = List.of();
+        try (Stream<Path> paths = Files.walk(directory, FileVisitOption.FOLLOW_LINKS)) {
+            results = paths.filter(Files::isRegularFile)
+                    .flatMap(file -> applyRuleToFile(rule, file, dBuilder).stream())
+                    .toList();
+            return results;
         } catch (IOException e) {
-            System.err.println("Error processing directory: " + directory.getPath());
+            System.err.println("Error processing directory: " + directory.toString());
             e.printStackTrace();
+            return results;
         }
     }
 
-    private void applyRuleToFile(Rule rule, File file, DocumentBuilder dBuilder) {
+    private List<RuleApplicationResult> applyRuleToFile(Rule rule, Path filePath, DocumentBuilder dBuilder) {
+        List<RuleApplicationResult> results = List.of();
         try {
-            Document doc = dBuilder.parse(file);
-            if (verbose) {
-                System.out.println("Applying rule " + rule + " to file: " + file.getPath());
+            Document doc = dBuilder.parse(filePath.toFile());
+            if (verboseOutput) {
+                System.out.println("Applying rule " + rule + " to file: " + filePath.toString());
             }
 
-            if (fix && rule instanceof AutoFixable && rule.checkCondition(doc, file)) {
-                ((AutoFixable) rule).autoFix(doc, file);
-                saveDocumentToFile(doc, file);
+            results = rule.applyRule(doc, filePath, fixEnabled); // ルールの適用
+
+            if (results.stream().anyMatch(RuleApplicationResult::isModified)) {
+                saveDocumentToFile(doc, filePath);
             }
+            return results;
+
         } catch (Exception e) {
-            System.err.println("Error applying rule to file: " + file.getPath());
+            System.err.println("Error applying rule to file: " + filePath.toString());
             e.printStackTrace();
+            return results;
         }
     }
 
-    private void saveDocumentToFile(Document doc, File file) throws Exception {
-        Transformer transformer = TransformerFactory.newInstance().newTransformer();
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-        DOMSource source = new DOMSource(doc);
-        StreamResult result = new StreamResult(file);
-        transformer.transform(source, result);
+    private void saveDocumentToFile(Document doc, Path filePath) throws Exception {
+        try (OutputStream outputStream = Files.newOutputStream(filePath)) {
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+            DOMSource source = new DOMSource(doc);
+            StreamResult result = new StreamResult(outputStream);
+            transformer.transform(source, result);
+        }
     }
+
 }
