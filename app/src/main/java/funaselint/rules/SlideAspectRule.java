@@ -36,23 +36,29 @@ public class SlideAspectRule extends Rule {
             double expectedRatio = 4.0 / 3.0;
 
             if (Math.abs(ratio - expectedRatio) < 0.01) { // 1%の誤差を許容
-                RuleApplicationResult result = new RuleApplicationResult(
-                        "スライドサイズの比率が 4:3 ではありません",
-                        "16:9 のスライドはやめなさいよ",
-                        filePath);
 
                 if (fixEnabled) {
                     sldSz.setAttribute("cx", "9144000");
                     sldSz.setAttribute("cy", "6858000");
-                    result.setModified(true);
+                    results.add(new RuleApplicationResult(this, filePath, true));
+                } else {
+                    results.add(new RuleApplicationResult(this, filePath, false));
                 }
-
-                results.add(result);
             }
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
 
         return results;
+    }
+
+    @Override
+    public String getFunaseMessage() {
+        return "スライドサイズの比率が 4:3 ではありません";
+    }
+
+    @Override
+    public String getMessage() {
+        return "16:9 のスライドはやめなさいよ";
     }
 }

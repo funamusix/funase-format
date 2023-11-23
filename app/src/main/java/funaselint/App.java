@@ -2,6 +2,7 @@ package funaselint;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 
 import funaselint.cli.ExistingPathConsumer;
@@ -64,15 +65,8 @@ public class App implements Callable<Integer> {
         config.setOutputStyle(style);
 
         Linter linter = new Linter(config);
-        List<List<RuleApplicationResult>> results = linter.lint(inputPath);
-
-        results.forEach(result -> {
-            if (result.isEmpty()) {
-                System.out.println("No problems found.");
-            } else {
-                System.out.println(style.format(result));
-            }
-        });
+        List<Entry<Path, List<RuleApplicationResult>>> results = linter.lint(inputPath);
+        System.out.println(style.format(results));
 
         return 0; // 成功した場合は0を返します
     }

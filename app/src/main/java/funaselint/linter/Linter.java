@@ -1,11 +1,12 @@
 package funaselint.linter;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -22,8 +23,8 @@ public class Linter {
                 config.getActiveRules().values().stream().toList(), config.isFixEnabled(), config.isVerboseOutput());
     }
 
-    public List<List<RuleApplicationResult>> lint(Path inputPath) {
-        if (Files.isDirectory(inputPath)) {
+    public List<Entry<Path, List<RuleApplicationResult>>> lint(Path inputPath) {
+        if (inputPath.toFile().isDirectory()) {
             return new IgnoreProcessor(inputPath).findFilesToLint().parallelStream()
                     .map(this::lintPresentation).toList();
         } else {
@@ -31,14 +32,16 @@ public class Linter {
         }
     }
 
-    public List<RuleApplicationResult> lintPresentation(Path pptx) {
+    public Entry<Path, List<RuleApplicationResult>> lintPresentation(Path pptx) {
         Presentation presentation = new Presentation(pptx);
         List<RuleApplicationResult> results = List.of();
         try {
             Path tempDir = TempDirUtils.createTempDirectory("unzippedPptx");
             ZipUtils.unzip(presentation.getFilePath(), tempDir);
 
-            System.out.println("Linting " + presentation.getFilePath() + "...");
+            if (ruleEngine.isVerboseOutput()) {
+                System.out.println("Applying rules to " + presentation.getFilePath() + "...");
+            }
             results = ruleEngine.applyRules(tempDir);
 
             if (ruleEngine.isFixEnabled()) {
@@ -48,10 +51,10 @@ public class Linter {
 
             TempDirUtils.deleteDirectory(tempDir);
 
-            return results;
+            return Map.entry(presentation.getFilePath(), results);
         } catch (IOException | ParserConfigurationException e) {
             e.printStackTrace();
-            return results;
+            return Map.entry(presentation.getFilePath(), results);
         }
     }
 
