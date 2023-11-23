@@ -6,6 +6,7 @@ import java.util.List;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
 import org.w3c.dom.Element;
 
 public class CTRRule extends Rule implements AutoFixable {
@@ -51,4 +52,16 @@ public class CTRRule extends Rule implements AutoFixable {
         Node attribute = node.getAttributes().getNamedItem(attributeName);
         return (attribute != null) ? attribute.getNodeValue() : null;
     }
+
+    /* 
+     @Override
+     public String getFunaseMessage(){
+        return "表内の文字がセンタリングされていません";
+     }
+
+     @Override
+     public String getMessage(){
+        return "これってセンタリングされてますか?";
+     }
+     */
 }
