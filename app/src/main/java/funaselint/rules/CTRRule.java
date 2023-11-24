@@ -54,7 +54,7 @@ public class CTRRule extends Rule {
 
     @Override
     public String getMessage() {
-        return "表の文字がセンタリングされてません";
+        return "表の文字が上下方向にセンタリングされてません";
     }
 
 }
