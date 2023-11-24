@@ -24,36 +24,37 @@ public class CTRRule extends Rule {
         for (int i = 0; i < graphicList.getLength(); i++) {
             Element graphicElement = (Element) graphicList.item(i);
 
-            // グラフ内の<a:pPr> タグを取得
-            NodeList pPrList = graphicElement.getElementsByTagName("a:pPr");
+            // グラフ内の<a:tcPr> タグを取得
+            NodeList pPrList = graphicElement.getElementsByTagName("a:tcPr");
             for (int j = 0; j < pPrList.getLength(); j++) {
                 Node pPrNode = pPrList.item(j);
                 if (pPrNode instanceof Element) {
                     Element pPrElement = (Element) pPrNode;
-                    String alignment = pPrElement.hasAttribute("algn") ? pPrElement.getAttribute("algn") : ""; // "algn"属性が存在しない場合にも対応
+                    String alignment = pPrElement.hasAttribute("anchor") ? pPrElement.getAttribute("anchor") : "";  // "amchor"属性が存在しない場合にも対応
                     if (!"ctr".equals(alignment)) {
-                        if (fixEnabled) {
-                            pPrElement.setAttribute("algn", "ctr");
+                        if(fixEnabled){
+                            pPrElement.setAttribute("anchor", "ctr");
                             results.add(new RuleApplicationResult(this, filePath, true));
-                        } else {
+                        }else{
                             results.add(new RuleApplicationResult(this, filePath, false));
                         }
                     }
                 }
-
+ 
             }
         }
+
         return results;
     }
 
     @Override
     public String getFunaseMessage() {
-        return "表の文字がセンタリングされていません";
+        return "表の数値は上下方向にセンタリングしてくださいな";
     }
 
     @Override
     public String getMessage() {
-        return "表の文字がセンタリングされてないし";
+        return "表の文字がセンタリングされてません";
     }
 
 }
