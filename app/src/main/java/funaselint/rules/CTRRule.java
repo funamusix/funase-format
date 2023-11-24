@@ -49,7 +49,7 @@ public class CTRRule extends Rule {
 
     @Override
     public String getFunaseMessage() {
-        return "表の数値は上下方向にセンタリングしてくださいな";
+        return "表の文字は上下方向にセンタリングしてくださいな";
     }
 
     @Override
