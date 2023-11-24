@@ -30,20 +30,19 @@ public class CTRRule extends Rule {
                 Node pPrNode = pPrList.item(j);
                 if (pPrNode instanceof Element) {
                     Element pPrElement = (Element) pPrNode;
-                    String alignment = pPrElement.hasAttribute("algn") ? pPrElement.getAttribute("algn") : "";  // "algn"属性が存在しない場合にも対応
+                    String alignment = pPrElement.hasAttribute("algn") ? pPrElement.getAttribute("algn") : ""; // "algn"属性が存在しない場合にも対応
                     if (!"ctr".equals(alignment)) {
-                        if(fixEnabled){
+                        if (fixEnabled) {
                             pPrElement.setAttribute("algn", "ctr");
                             results.add(new RuleApplicationResult(this, filePath, true));
-                        }else{
+                        } else {
                             results.add(new RuleApplicationResult(this, filePath, false));
                         }
                     }
                 }
- 
+
             }
         }
-
         return results;
     }
 
