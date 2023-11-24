@@ -1,45 +1,51 @@
 package funaselint.rules;
 
-import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class PunctuationMarkRule extends Rule implements AutoFixable {
+public class PunctuationMarkRule extends Rule {
 
     @Override
-    public List<String> applicableFilesOrFolders() {
-        return List.of("ppt/slides/"); // relsも含んでしまう問題あり
+    public List<Path> applicablePath() {
+        return List.of(Paths.get("ppt/slides/"));
     }
 
     @Override
-    public boolean checkCondition(Document doc, File file) {
+    public List<RuleApplicationResult> applyRule(Document doc, Path filePath, boolean fixEnabled) {
+        List<RuleApplicationResult> results = new ArrayList<>();
+
         NodeList textNodes = doc.getElementsByTagName("a:t"); // <a:t> タグに含まれるテキストを取得
         for (int i = 0; i < textNodes.getLength(); i++) {
             Node textNode = textNodes.item(i);
             String textContent = textNode.getTextContent();
             if (textContent.contains(".") || textContent.contains(",") || textContent.contains("、") || textContent.contains("。")) {
                 // 文中に句読点が含まれている場合は修正が必要
-                return true;
+                // 句読点を削除
+                textContent = textContent.replace(".", "").replace(",", "").replace("、", "").replace("。", "");
+
+                // 修正したテキストを設定
+                textNode.setTextContent(textContent);
+                results.add(new RuleApplicationResult(this, filePath, false));
+                break;
             }
         }
-        return false;
+        
+        return results;
     }
 
     @Override
-    public void autoFix(Document doc, File file) {
-        NodeList textNodes = doc.getElementsByTagName("a:t");
-        for (int i = 0; i < textNodes.getLength(); i++) {
-            Node textNode = textNodes.item(i);
-            String textContent = textNode.getTextContent();
-            
-            // 句読点を削除
-            textContent = textContent.replace(".", "").replace(",", "").replace("、", "").replace("。", "");
+    public String getMessage() {
+        return "文中に句読点が含まれています";
+    }
 
-            // 修正したテキストを設定
-            textNode.setTextContent(textContent);
-        }
+    @Override
+    public String getFunaseMessage() {
+        return "、や。が出てくるのは文章だからだめだよね";
     }
 }
