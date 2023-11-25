@@ -1,6 +1,8 @@
 package funaselint.rules;
 
-import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.w3c.dom.Document;
@@ -8,47 +10,51 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
 
-public class CTRRule extends Rule implements AutoFixable {
+public class CTRRule extends Rule {
 
     @Override
-    public List<String> applicableFilesOrFolders() {
-        return List.of("ppt/slides/");
+    public List<Path> applicablePath() {
+        return List.of(Paths.get("ppt/slides/"));
     }
 
     @Override
-    public boolean checkCondition(Document doc, File file) {
-        NodeList pPrNodes = doc.getElementsByTagName("a:pPr");
-        for (int i = 0; i < pPrNodes.getLength(); i++) {
-            Node pPrNode = pPrNodes.item(i);
-            if (pPrNode != null && !"ctr".equals(getAttributeValue(pPrNode, "algn"))) {
-                // ctrでない場合true
-                return true;
-            }
-        }
-        return false;
-    }
+    public List<RuleApplicationResult> applyRule(Document doc, Path filePath, boolean fixEnabled) {
+        List<RuleApplicationResult> results = new ArrayList<>();
+        NodeList graphicList = doc.getElementsByTagName("a:graphic");
+        for (int i = 0; i < graphicList.getLength(); i++) {
+            Element graphicElement = (Element) graphicList.item(i);
 
-    @Override
-    public void autoFix(Document doc, File file) {
-        NodeList pPrNodes = doc.getElementsByTagName("a:pPr");
-        for (int i = 0; i < pPrNodes.getLength(); i++) {
-            Node pPrNode = pPrNodes.item(i);
-
-            if (pPrNode instanceof Element) {
-                Element pPrElement = (Element) pPrNode;
-                // "algn"属性が存在しない場合にも対応
-                String alignment = pPrElement.hasAttribute("algn") ? pPrElement.getAttribute("algn") : "";
-
-                // "ctr"に修正
-                if (!"ctr".equals(alignment)) {
-                    pPrElement.setAttribute("algn", "ctr");
+            // グラフ内の<a:tcPr> タグを取得
+            NodeList pPrList = graphicElement.getElementsByTagName("a:tcPr");
+            for (int j = 0; j < pPrList.getLength(); j++) {
+                Node pPrNode = pPrList.item(j);
+                if (pPrNode instanceof Element) {
+                    Element pPrElement = (Element) pPrNode;
+                    String alignment = pPrElement.hasAttribute("anchor") ? pPrElement.getAttribute("anchor") : "";  // "amchor"属性が存在しない場合にも対応
+                    if (!"ctr".equals(alignment)) {
+                        if(fixEnabled){
+                            pPrElement.setAttribute("anchor", "ctr");
+                            results.add(new RuleApplicationResult(this, filePath, true));
+                        }else{
+                            results.add(new RuleApplicationResult(this, filePath, false));
+                        }
+                    }
                 }
+ 
             }
         }
+
+        return results;
     }
 
-    private String getAttributeValue(Node node, String attributeName) {
-        Node attribute = node.getAttributes().getNamedItem(attributeName);
-        return (attribute != null) ? attribute.getNodeValue() : null;
+    @Override
+    public String getFunaseMessage() {
+        return "表の文字は上下方向にセンタリングしてくださいな";
     }
+
+    @Override
+    public String getMessage() {
+        return "表の文字が上下方向にセンタリングされてません";
+    }
+
 }
