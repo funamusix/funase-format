@@ -5,11 +5,11 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Attr;
 
 public class FontMinimumRule extends Rule {
 
@@ -51,11 +51,11 @@ public class FontMinimumRule extends Rule {
 
     @Override
     public String getFunaseMessage() {
-        return "スライド読ませるつもりある？本文のフォントの大きさは最低でも22pt以上にしなさいな。";
+        return "スライド読ませるつもりある？本文のフォントの大きさは最低でも 22 pt 以上にしなさいな．";
     }
 
     @Override
     public String getMessage() {
-        return "フォントサイズが" + MIN_FONT_SIZE + "未満のものがあります";
+        return "フォントサイズが 22 pt 未満のものがあります．";
     }
 }

@@ -1,0 +1,9 @@
+{
+    "fixEnabled": false,
+    "verboseOutput": false,
+    "outputStyle": "json",
+    "rules": {
+        "SlideAspectRule": false,
+        "SlideThemeRule": false
+    }
+}

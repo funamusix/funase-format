@@ -37,7 +37,7 @@ public class App implements Callable<Integer> {
     @Option(names = { "--style", "-s" }, //
             description = "Specify output style.", //
             parameterConsumer = StyleParameterConsumer.class)
-    private OutputStyle style = OutputStyle.JAPANESE;
+    private OutputStyle style;
 
     @Parameters(index = "0", //
             description = "The PowerPoint file or directory to lint.", //
@@ -62,11 +62,13 @@ public class App implements Callable<Integer> {
         if (verbose != null) {
             config.setVerboseOutput(verbose);
         }
-        config.setOutputStyle(style);
+        if (style != null) {
+            config.setOutputStyle(style);
+        }
 
         Linter linter = new Linter(config);
         List<Entry<Path, List<RuleApplicationResult>>> results = linter.lint(inputPath);
-        System.out.println(style.format(results));
+        System.out.println(config.getOutputStyle().format(results));
 
         return 0; // 成功した場合は0を返します
     }

@@ -1,13 +1,13 @@
 package funaselint.rules;
 
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 
 public class SlideTitleFontSizeRule extends Rule {
 
@@ -56,11 +56,11 @@ public class SlideTitleFontSizeRule extends Rule {
 
     @Override
     public String getFunaseMessage() {
-        return "スライドタイトルを一番大きく（40pt以上にしろ）/n本文の文字の大きさは22~38ptぐらいまでにしなさいな";
+        return "スライドタイトルを一番大きく（40 pt 以上にしろ）/n本文の文字の大きさは 22~38 pt ぐらいまでにしなさいな．";
     }
 
     @Override
     public String getMessage() {
-        return "スライドタイトルには40pt以上のフォントサイズが正しく指定されていません。";
+        return "スライドタイトルには 40 pt 以上のフォントサイズが正しく指定されていません．";
     }
 }

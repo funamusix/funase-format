@@ -37,11 +37,11 @@ public class QuestionMarkRule extends Rule {
 
     @Override
     public String getFunaseMessage() {
-        return "\"?\"とか使うのやめようよ。子どもの文章じゃあるまいし";
+        return "\"?\" とか使うのやめようよ．子どもの文章じゃあるまいし．";
     }
 
     @Override
     public String getMessage() {
-        return "疑問符（?）が使用されています";
+        return "疑問符（?）が使用されています．";
     }
 }

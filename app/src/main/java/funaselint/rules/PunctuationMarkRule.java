@@ -41,11 +41,11 @@ public class PunctuationMarkRule extends Rule {
 
     @Override
     public String getMessage() {
-        return "文中に句読点が含まれています";
+        return "文中に句読点が含まれています．";
     }
 
     @Override
     public String getFunaseMessage() {
-        return "、や。が出てくるのは文章だからだめだよね、箇条書きで書きなさいな";
+        return "『、』や『。』が出てくるのは文章だからだめだよね．箇条書きで書きなさいな．";
     }
 }

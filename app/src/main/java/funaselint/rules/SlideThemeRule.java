@@ -36,11 +36,11 @@ public class SlideThemeRule extends Rule {
 
     @Override
     public String getMessage() {
-        return "スライドテーマが白紙になっています";
+        return "スライドテーマが白紙になっています．";
     }
 
     @Override
     public String getFunaseMessage() {
-        return "見た目ゴミだとスライドってね、見てもらえないのよ。白紙は殺風景だからやめてね";
+        return "見た目ゴミだとスライドってね，見てもらえないのよ．白紙は殺風景だからやめてね．";
     }
 }

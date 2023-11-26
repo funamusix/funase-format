@@ -11,14 +11,17 @@ import picocli.CommandLine.Model.CommandSpec;
 public class StyleParameterConsumer implements IParameterConsumer {
     @Override
     public void consumeParameters(Stack<String> args, ArgSpec argSpec, CommandSpec commandSpec) {
-        String styleStr = args.pop();
-
-        try {
-            OutputStyle style = OutputStyle.valueOf(styleStr.toUpperCase());
-            argSpec.setValue(style);
-        } catch (IllegalArgumentException e) {
-            throw new CommandLine.ParameterException(commandSpec.commandLine(),
-                    "Invalid style option. Please use 'JSON' or 'FUNASE'.");
+        if (!args.isEmpty()) {
+            String styleStr = args.pop();
+            try {
+                OutputStyle style = OutputStyle.valueOf(styleStr.toUpperCase());
+                argSpec.setValue(style);
+            } catch (IllegalArgumentException e) {
+                throw new CommandLine.ParameterException(commandSpec.commandLine(),
+                        "Invalid style option. Please use 'JSON' or 'FUNASE'.");
+            }
+        } else {
+            argSpec.setValue(null); // オプションが設定されていない場合は null を設定
         }
     }
 }

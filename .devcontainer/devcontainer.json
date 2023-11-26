@@ -1,7 +1,7 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/java
 {
-	"name": "Java",
+	"name": "Java with Jupyter Notebook",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
 	"image": "mcr.microsoft.com/devcontainers/java:1-17-bookworm",
 	"features": {
@@ -18,10 +18,15 @@
 				"vscjava.vscode-gradle",
 				"GitHub.copilot",
 				"mhutchie.git-graph",
-				"redhat.vscode-xml"
+				"redhat.vscode-xml",
+				"ms-python.python",
+				"ms-python.black-formatter",
+				"ms-toolsai.jupyter"
 			]
 		}
-	}
+	},
+	"postCreateCommand": "apt-get update && apt-get install -y python3-ipykernel python3-pip",
+	"remoteUser": "root"
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 	// Use 'postCreateCommand' to run commands after the container is created.
