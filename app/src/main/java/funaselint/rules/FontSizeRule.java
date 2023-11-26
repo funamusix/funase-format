@@ -99,7 +99,7 @@ public class FontSizeRule extends Rule {
 
     @Override
     public String getFunaseMessage() {
-        return "本文の文字の大きさは 22 ~ 38 pt ぐらいまで、スライドタイトルを一番大きく（40 pt 以上）しなさいな．";
+        return "本文の文字の大きさは 22 ~ 38 pt ぐらいまで，スライドタイトルを一番大きく（40 pt 以上）しなさいな．";
     }
 
     @Override

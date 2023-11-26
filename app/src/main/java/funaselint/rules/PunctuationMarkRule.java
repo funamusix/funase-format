@@ -31,7 +31,7 @@ public class PunctuationMarkRule extends Rule {
 
                 // 修正したテキストを設定
                 textNode.setTextContent(textContent);
-                results.add(new RuleApplicationResult(this, filePath, false));
+                results.add(new RuleApplicationResult(this, filePath, true));
                 break;
             }
         }

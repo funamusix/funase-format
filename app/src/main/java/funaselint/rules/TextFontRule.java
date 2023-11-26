@@ -29,8 +29,8 @@ public class TextFontRule extends Rule {
             // フォント名を取得
             String fontName = textFontElement.getAttribute("typeface");
 
-            // "UD"で始まるフォントに対する警告
-            if (fontName.startsWith("UD")) {
+            // "游"で始まるフォントに対する警告
+            if (fontName.startsWith("游")) {
                 results.add(new RuleApplicationResult(this, filePath, false));
                 break;
             }

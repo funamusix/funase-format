@@ -59,6 +59,6 @@ public class SlideAspectRule extends Rule {
 
     @Override
     public String getFunaseMessage() {
-        return "16:9 のスライドはやめなさいよ、間延びしすぎて見づらいのよね．";
+        return "16:9 のスライドはやめなさいよ，間延びしすぎて見づらいのよね．";
     }
 }
