@@ -1,37 +1,46 @@
 package funaselint.rules;
 
-import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-public class SlideThemeRule extends Rule implements AutoFixable{
+public class SlideThemeRule extends Rule {
 
     @Override
-    public List<String> applicableFilesOrFolders() {
-        return List.of("ppt/theme/theme1.xml");
+    public List<Path> applicablePath() {
+        return List.of(Paths.get("ppt/theme/theme1.xml"));
     }
 
     @Override
-    public boolean checkCondition(Document doc, File file) {
-        NodeList clrSchemeNodes = doc.getElementsByTagName("a:clrScheme");
-        for (int i = 0; i < clrSchemeNodes.getLength(); i++) {
-            Element clrSchemeNode = (Element) clrSchemeNodes.item(i);
-            String nameAttribute = clrSchemeNode.getAttribute("name");
-            if ("Office".equals(nameAttribute)) {
-                // デザインが "Office" の場合は問題あり
-                System.out.println("Warning: スライドテーマが白紙になっています。");
-                System.out.println("見た目ゴミだとスライドってね、見てもらえないのよ。白紙は殺風景だからやめてね");
-                return true;
+    public List<RuleApplicationResult> applyRule(Document doc, Path filePath, boolean fixEnabled) {
+        List<RuleApplicationResult> results = new ArrayList<>();
+        NodeList themeNameNodes = doc.getElementsByTagName("a:clrScheme");
+        
+        if (themeNameNodes.getLength() > 0) {
+            Element themeNameNode = (Element) themeNameNodes.item(0);
+            String themeName = themeNameNode.getAttribute("name");
+
+            // テーマ名が"Office"であるかどうかを確認
+            if ("Office".equals(themeName)) {
+                results.add(new RuleApplicationResult(this, filePath, false));
             }
         }
-        // デザインが "Office" でない場合は問題なし
-        return false;
+        
+        return results;
     }
 
     @Override
-     public void autoFix(Document doc, File file) {
+    public String getMessage() {
+        return "スライドテーマが白紙になっています";
+    }
+
+    @Override
+    public String getFunaseMessage() {
+        return "見た目ゴミだとスライドってね、見てもらえないのよ。白紙は殺風景だからやめてね";
     }
 }
