@@ -46,6 +46,6 @@ public class PunctuationMarkRule extends Rule {
 
     @Override
     public String getFunaseMessage() {
-        return "、や。が出てくるのは文章だからだめだよね";
+        return "、や。が出てくるのは文章だからだめだよね、箇条書きで書きなさいな";
     }
 }

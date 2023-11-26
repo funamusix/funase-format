@@ -35,7 +35,7 @@ public class SlideAspectRule extends Rule {
             double ratio = (double) width / height;
             double expectedRatio = 4.0 / 3.0;
 
-            if (Math.abs(ratio - expectedRatio) < 0.01) { // 1%の誤差を許容
+            if (Math.abs(ratio - expectedRatio) > 0.01) { // 1%の誤差を許容
 
                 if (fixEnabled) {
                     sldSz.setAttribute("cx", "9144000");
@@ -53,12 +53,12 @@ public class SlideAspectRule extends Rule {
     }
 
     @Override
-    public String getFunaseMessage() {
+    public String getMessage() {
         return "スライドサイズの比率が 4:3 ではありません";
     }
 
     @Override
-    public String getMessage() {
-        return "16:9 のスライドはやめなさいよ";
+    public String getFunaseMessage() {
+        return "16:9 のスライドはやめなさいよ、間延びしすぎて見づらいのよね";
     }
 }
