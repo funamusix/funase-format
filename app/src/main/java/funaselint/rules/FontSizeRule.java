@@ -99,11 +99,11 @@ public class FontSizeRule extends Rule {
 
     @Override
     public String getFunaseMessage() {
-        return "フォントサイズに関する警告があります";
+        return "本文の文字の大きさは 22 ~ 38 pt ぐらいまで、スライドタイトルを一番大きく（40 pt 以上）しなさいな．";
     }
 
     @Override
     public String getMessage() {
-        return "本文の文字の大きさは22~38ptぐらいまで、スライドタイトルを一番大きく（40pt以上）しなさいな";
+        return "フォントサイズに関する警告があります．";
     }
 }

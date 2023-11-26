@@ -54,11 +54,11 @@ public class SlideAspectRule extends Rule {
 
     @Override
     public String getMessage() {
-        return "スライドサイズの比率が 4:3 ではありません";
+        return "スライドサイズの比率が 4:3 ではありません．";
     }
 
     @Override
     public String getFunaseMessage() {
-        return "16:9 のスライドはやめなさいよ、間延びしすぎて見づらいのよね";
+        return "16:9 のスライドはやめなさいよ、間延びしすぎて見づらいのよね．";
     }
 }

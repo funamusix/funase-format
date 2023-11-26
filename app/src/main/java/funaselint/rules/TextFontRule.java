@@ -47,11 +47,11 @@ public class TextFontRule extends Rule {
 
     @Override
     public String getMessage() {
-        return "特定のフォントは使用しないでください";
+        return "見栄えの悪いフォントは使用しないでください．";
     }
 
     @Override
     public String getFunaseMessage() {
-        return "あんまりこうUフォントやMSゴシックって嫌いなのよ";
+        return "あんまりこう游フォントや MS ゴシックって嫌いなのよ．";
     }
 }

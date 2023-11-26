@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Element;
 
 public class CTRRule extends Rule {
 
@@ -49,12 +49,12 @@ public class CTRRule extends Rule {
 
     @Override
     public String getFunaseMessage() {
-        return "表の文字は上下方向にセンタリングしてくださいな";
+        return "表の文字は上下方向にセンタリングしてくださいな．";
     }
 
     @Override
     public String getMessage() {
-        return "表の文字が上下方向にセンタリングされてません";
+        return "表の文字が上下方向にセンタリングされてません．";
     }
 
 }

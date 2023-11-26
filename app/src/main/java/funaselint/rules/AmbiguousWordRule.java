@@ -42,11 +42,11 @@ public class AmbiguousWordRule extends Rule {
 
     @Override
     public String getFunaseMessage() {
-        return "可能な限り主観的な評価を取り除くことが工学の文章の考え方です。客観的に得られた情報を使いなさい。";
+        return "可能な限り主観的な評価を取り除くことが工学の文章の考え方です．客観的に得られた情報を使いなさい．";
     }
 
     @Override
     public String getMessage() {
-        return "曖昧な言葉が使用されています";
+        return "曖昧な言葉が使用されています．";
     }
 }
