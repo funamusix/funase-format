@@ -21,7 +21,7 @@ public class Config {
     private boolean fixEnabled = false;
     private boolean verboseOutput = false;
     private Map<String, Rule> activeRules = new HashMap<>();
-    private OutputStyle outputStyle = OutputStyle.JSON;
+    private OutputStyle outputStyle = OutputStyle.JAPANESE;
     private final Gson gson = new Gson();
 
     public Config() {
